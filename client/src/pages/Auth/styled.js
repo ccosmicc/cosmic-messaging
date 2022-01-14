@@ -61,6 +61,11 @@ const SubmitButton = styled.button`
   &:hover {
     background: var(--cosmic-button-active-color);
   }
+
+  &:disabled {
+    color: var(--cosmic-button-active-color);
+    cursor: not-allowed;
+  }
 `;
 
 const Link = styled.a`

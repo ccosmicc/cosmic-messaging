@@ -1,6 +1,8 @@
+import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import { login } from "../../../redux/apiCalls";
 
 import {
   Container,
@@ -12,22 +14,27 @@ import {
   Link,
 } from "../styled";
 
-const SignupSchema = yup.object().shape({
-  email: yup.string().email().required(),
-  password: yup.string().required().min(6).max(15),
+const loginSchema = yup.object().shape({
+  username: yup.string().required(),
+  password: yup.string().required(),
 });
 
+/* We don't have username and password states since input data is handled by the react hook forms*/
+
 const Login = () => {
+  const dispatch = useDispatch();
+  const { isFetching, error } = useSelector((state) => state.user);
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(SignupSchema),
+    resolver: yupResolver(loginSchema),
   });
 
-  const onSubmit = (data) => {
-    //TODO:handle submit
+  const onSubmit = (user) => {
+    login(dispatch, user);
   };
 
   return (
@@ -35,18 +42,23 @@ const Login = () => {
       <StyledForm onSubmit={handleSubmit(onSubmit)}>
         <Title>LOGIN to the Cosmic ✨</Title>
         <InputWrapper>
-          <label>Email</label>
-          <input {...register("email")} />
-          {errors.email && <ErrorMessage>{errors.email.message}</ErrorMessage>}
+          <label>Username</label>
+          <input {...register("username")} />
+          {errors.username && (
+            <ErrorMessage>{errors.username.message}</ErrorMessage>
+          )}
         </InputWrapper>
         <InputWrapper>
           <label>Password</label>
-          <input {...register("password")} />
+          <input {...register("password")} type="password" />
           {errors.password && (
             <ErrorMessage>{errors.password.message}</ErrorMessage>
           )}
         </InputWrapper>
-        <SubmitButton type="submit"> LOGIN</SubmitButton>
+        <SubmitButton disabled={isFetching} type="submit">
+          LOGIN
+        </SubmitButton>
+        {error && <ErrorMessage>Opps...Something went wrong 😔</ErrorMessage>}
         <Link>Forgot your password?</Link>
         <Link>New to the Cosmic?</Link>
       </StyledForm>

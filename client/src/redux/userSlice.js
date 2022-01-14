@@ -3,14 +3,28 @@ import { createSlice } from "@reduxjs/toolkit";
 const userSlice = createSlice({
   name: "user",
   initialState: {
-    name: "undefined",
-    email: "undefined",
-    image: null,
+    currentUser: null,
+    isFetching: false,
+    error: false,
   },
+
+  /* Login is an async function since it makes API request */
   reducers: {
-    update: {},
+    loginStart: (state) => {
+      state.isFetching = true;
+      state.error = false;
+    },
+    loginSuccess: (state, action) => {
+      state.isFetching = false;
+      state.currentUser = action.payload;
+      state.error = false;
+    },
+    loginFailure: (state) => {
+      state.isFetching = false;
+      state.error = true;
+    },
   },
 });
 
-export const { update } = userSlice.actions;
+export const { loginStart, loginSuccess, loginFailure } = userSlice.actions;
 export default userSlice.reducer;
