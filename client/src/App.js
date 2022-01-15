@@ -5,13 +5,13 @@ import {
   Navigate,
 } from "react-router-dom";
 
+import { useSelector } from "react-redux";
 import Login from "./pages/Auth/Login";
 import SignUp from "./pages/Auth/SignUp";
 import Home from "./pages/Home/";
 
 function App() {
-  //TODO: Handle authentication
-  const isAuthenticated = false;
+  const user = useSelector((state) => state.user.currentUser);
   return (
     <div className="app">
       <Router>
@@ -20,12 +20,12 @@ function App() {
           <Route
             exact
             path="/login"
-            element={isAuthenticated ? <Navigate to="/" /> : <Login />}
+            element={user ? <Navigate to="/" /> : <Login />}
           />
           <Route
             exact
             path="/signup"
-            element={isAuthenticated ? <Navigate to="/" /> : <SignUp />}
+            element={user ? <Navigate to="/" /> : <SignUp />}
           />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>

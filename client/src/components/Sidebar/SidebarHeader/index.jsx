@@ -1,5 +1,6 @@
 import { FiberManualRecord, CreateOutlined } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
+import { useSelector } from "react-redux";
 import {
   Container,
   HeaderInfo,
@@ -9,11 +10,12 @@ import {
 } from "./styled";
 
 const SidebarHeader = () => {
+  const user = useSelector((state) => state.user.currentUser);
+
   return (
     <Container>
       <HeaderInfo>
-        <HeaderInfoTitle>Hatice Demir</HeaderInfoTitle>
-        {/*TODO: Get the name when user logs in */}
+        <HeaderInfoTitle>{user && user.username}</HeaderInfoTitle>
         <HeaderInfoTextContainer>
           <FiberManualRecord />
           active
