@@ -1,7 +1,8 @@
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-
+import { useDispatch, useSelector } from "react-redux";
+import { signup } from "../../../redux/apiCalls";
 import {
   Container,
   Title,
@@ -12,7 +13,6 @@ import {
   Link,
 } from "../styled";
 
-//TODO: check username and email if it is already exist
 const SignUpSchema = yup.object().shape({
   email: yup.string().email().required(),
   username: yup.string().required().min(3).max(10),
@@ -23,6 +23,9 @@ const SignUpSchema = yup.object().shape({
 });
 
 const SignUp = () => {
+  const dispatch = useDispatch();
+  const { isFetching, error } = useSelector((state) => state.user);
+
   const {
     register,
     handleSubmit,
@@ -31,8 +34,8 @@ const SignUp = () => {
     resolver: yupResolver(SignUpSchema),
   });
 
-  const onSubmit = (data) => {
-    //TODO:handle submit
+  const onSubmit = (user) => {
+    signup(dispatch, user);
   };
 
   return (
@@ -65,7 +68,10 @@ const SignUp = () => {
             <ErrorMessage>{errors.confirmPassword.message}</ErrorMessage>
           )}
         </InputWrapper>
-        <SubmitButton type="submit"> SIGN UP</SubmitButton>
+        <SubmitButton disabled={isFetching} type="submit">
+          SIGN UP
+        </SubmitButton>
+        {error && <ErrorMessage>Opps...Something went wrong 😔</ErrorMessage>}
         <Link>Forgot your password?</Link>
         <Link>Already have an account?</Link>
       </StyledForm>
