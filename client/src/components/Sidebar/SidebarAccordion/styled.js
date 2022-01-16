@@ -37,10 +37,11 @@ const ItemWrapper = styled.div`
 `;
 
 const SubTitle = styled.span`
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 500;
   margin-left: 10px;
 `;
+
 export {
   StyledAccordion,
   StyledAccordionSummary,

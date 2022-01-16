@@ -5,8 +5,11 @@ import {
   registerStart,
   registerSuccess,
   registerFailure,
+  getFriendsStart,
+  getFriendsSuccess,
+  getFriendsFailure,
 } from "./userSlice";
-import { publicRequest } from "../requestMethods";
+import { publicRequest, userRequest } from "../requestMethods";
 
 export const login = async (dispatch, user) => {
   dispatch(loginStart());
@@ -25,5 +28,17 @@ export const signup = async (dispatch, user) => {
     dispatch(registerSuccess(res.data));
   } catch (error) {
     dispatch(registerFailure());
+  }
+};
+
+export const getFriends = async (dispatch, user) => {
+  const userID = user._id;
+  dispatch(getFriendsStart());
+  try {
+    const res = await publicRequest.get("/users/friends/" + userID);
+    dispatch(getFriendsSuccess(res.data));
+    return res;
+  } catch (error) {
+    dispatch(getFriendsFailure());
   }
 };

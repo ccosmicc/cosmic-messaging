@@ -6,6 +6,7 @@ const userSlice = createSlice({
     currentUser: null,
     isFetching: false,
     error: false,
+    friends: null,
   },
 
   /* Login is an async function since it makes API request */
@@ -36,6 +37,19 @@ const userSlice = createSlice({
       state.isFetching = false;
       state.error = true;
     },
+    getFriendsStart: (state) => {
+      state.isFetching = true;
+      state.error = false;
+    },
+    getFriendsSuccess: (state, action) => {
+      state.isFetching = false;
+      state.friends = action.payload;
+      state.error = false;
+    },
+    getFriendsFailure: (state) => {
+      state.isFetching = false;
+      state.error = true;
+    },
   },
 });
 
@@ -46,5 +60,8 @@ export const {
   registerStart,
   registerSuccess,
   registerFailure,
+  getFriendsStart,
+  getFriendsSuccess,
+  getFriendsFailure,
 } = userSlice.actions;
 export default userSlice.reducer;

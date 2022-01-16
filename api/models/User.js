@@ -6,6 +6,10 @@ const UserSchema = new mongoose.Schema(
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     isAdmin: { type: Boolean, default: false },
+    profilePicture: { type: String, default: "" },
+    friends: { type: Array, default: [] },
+    directMessages: { type: Array, default: [] },
+    rooms: { type: Array, default: [] },
   },
   { timestamps: true }
 );
