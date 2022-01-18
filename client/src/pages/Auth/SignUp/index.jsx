@@ -3,6 +3,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
 import { signup } from "../../../redux/apiCalls";
+import { box } from 'tweetnacl';
+import { encodeBase64 } from 'tweetnacl-util';
 import {
   Container,
   Title,
@@ -22,6 +24,18 @@ const SignUpSchema = yup.object().shape({
     .oneOf([yup.ref("password"), null], "Passwords must match"),
 });
 
+const generateKeyPair = () => {
+  const clientPair = box.keyPair();
+
+  let pbkey = encodeBase64(clientPair.publicKey);
+  let pvkey = encodeBase64(clientPair.secretKey);
+
+  console.log(`Public  key: ${pbkey}\nPrivate Key: ${pvkey}`);
+
+  localStorage.setItem('PUBLIC_KEY', pbkey);
+  localStorage.setItem('PRIVATE_KEY', pvkey);
+}
+
 const SignUp = () => {
   const dispatch = useDispatch();
   const { isFetching, error } = useSelector((state) => state.user);
@@ -35,6 +49,8 @@ const SignUp = () => {
   });
 
   const onSubmit = (user) => {
+    generateKeyPair();
+    user.publicKey = localStorage.getItem('PUBLIC_KEY');
     signup(dispatch, user);
   };
 
