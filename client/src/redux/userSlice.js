@@ -7,6 +7,8 @@ const userSlice = createSlice({
     isFetching: false,
     error: false,
     friends: null,
+    conversations: null,
+    messages: null,
   },
 
   /* Login is an async function since it makes API request */
@@ -50,6 +52,32 @@ const userSlice = createSlice({
       state.isFetching = false;
       state.error = true;
     },
+    getConversationsStart: (state) => {
+      state.isFetching = true;
+      state.error = false;
+    },
+    getConversationsSuccess: (state, action) => {
+      state.isFetching = false;
+      state.conversations = action.payload;
+      state.error = false;
+    },
+    getConversationsFailure: (state) => {
+      state.isFetching = false;
+      state.error = true;
+    },
+    getMessagesStart: (state) => {
+      state.isFetching = true;
+      state.error = false;
+    },
+    getMessagesSuccess: (state, action) => {
+      state.isFetching = false;
+      state.messages = action.payload;
+      state.error = false;
+    },
+    getMessagesFailure: (state) => {
+      state.isFetching = false;
+      state.error = true;
+    },
   },
 });
 
@@ -63,5 +91,11 @@ export const {
   getFriendsStart,
   getFriendsSuccess,
   getFriendsFailure,
+  getConversationsStart,
+  getConversationsSuccess,
+  getConversationsFailure,
+  getMessagesStart,
+  getMessagesSuccess,
+  getMessagesFailure,
 } = userSlice.actions;
 export default userSlice.reducer;

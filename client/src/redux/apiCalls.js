@@ -8,6 +8,12 @@ import {
   getFriendsStart,
   getFriendsSuccess,
   getFriendsFailure,
+  getConversationsStart,
+  getConversationsSuccess,
+  getConversationsFailure,
+  getMessagesStart,
+  getMessagesSuccess,
+  getMessagesFailure,
 } from "./userSlice";
 import { publicRequest, userRequest } from "../requestMethods";
 
@@ -40,5 +46,41 @@ export const getFriends = async (dispatch, user) => {
     return res;
   } catch (error) {
     dispatch(getFriendsFailure());
+  }
+};
+
+export const getConversations = async (dispatch, user) => {
+  const userID = user._id;
+  dispatch(getConversationsStart());
+  try {
+    const res = await publicRequest.get("/conversations/" + userID);
+    dispatch(getConversationsSuccess(res.data));
+    return res;
+  } catch (error) {
+    dispatch(getConversationsFailure());
+  }
+};
+
+/*
+TODO:It is temporary solution
+We need to reach the user profile picture and name to use in the conversation list in the sidebar accordion  */
+export const getUser = async (userID) => {
+  try {
+    const res = await publicRequest.get("/users/find/" + userID);
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getMessages = async (dispatch, currentConversation) => {
+  const conversationID = currentConversation?._id;
+  dispatch(getMessagesStart());
+  try {
+    const res = await publicRequest.get("/messages/" + conversationID);
+    dispatch(getMessagesSuccess(res.data));
+    return res;
+  } catch (error) {
+    dispatch(getMessagesFailure());
   }
 };

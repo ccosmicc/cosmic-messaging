@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import { ChevronRightOutlined } from "@mui/icons-material";
@@ -11,8 +12,7 @@ import {
 } from "./styled";
 
 const SidebarAccordion = ({ type }) => {
-  const friendsList = useSelector((state) => state.user.friends);
-
+  const conversations = useSelector((state) => state.user.conversations);
   return (
     <StyledAccordion elevation={0} disableGutters>
       <StyledAccordionSummary
@@ -26,12 +26,9 @@ const SidebarAccordion = ({ type }) => {
       </StyledAccordionSummary>
       <AccordionDetails>
         {type === "direct-message" &&
-          friendsList?.map((friend) => (
-            <AccordionItem
-              type={type}
-              image={friend.profilePicture}
-              name={friend.username}
-            />
+          conversations &&
+          conversations.map((c) => (
+            <AccordionItem type={type} conversation={c} key={c._id} />
           ))}
       </AccordionDetails>
       <AccordionAction type={type} />

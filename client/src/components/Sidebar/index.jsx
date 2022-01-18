@@ -6,7 +6,7 @@ import SidebarAccordion from "./SidebarAccordion";
 import SidebarHeader from "./SidebarHeader";
 
 import { Container, Hr, SidebarOptions, BodyWrapper } from "./styled";
-import { getFriends } from "../../redux/apiCalls";
+import { getConversations, getFriends } from "../../redux/apiCalls";
 
 //TODO: Sidebar Scroll mechanism
 const Sidebar = () => {
@@ -22,6 +22,17 @@ const Sidebar = () => {
       }
     };
     fetchFriends();
+  }, [user]);
+
+  useEffect(() => {
+    const fetchConversations = async () => {
+      try {
+        await getConversations(dispatch, user);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetchConversations();
   }, [user]);
 
   return (
