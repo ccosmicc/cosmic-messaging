@@ -1,6 +1,6 @@
 import "emoji-mart/css/emoji-mart.css";
 import { Picker } from "emoji-mart";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Tooltip, Popper } from "@mui/material/";
 
@@ -12,17 +12,32 @@ import {
   StyledSendButton,
 } from "./styled";
 
+import { getUser } from "../../../redux/apiCalls";
+
 const ChatInputBox = ({ chatType }) => {
   const [text, setText] = useState("");
   const [isPopperOpen, setPopperOpen] = useState(false);
 
+  const currentUser = useSelector((state) => state.user.currentUser);
+  const currentChat = useSelector((state) => state.user.currentChat);
+
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const userID = currentChat.members.find((m) => m !== currentUser._id);
+        const user = await getUser(userID);
+        setUser(user);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetchUserInfo();
+  }, [currentUser, currentChat.members]);
+
   /* It's used to set the position of the popper */
   const [anchorEl, setAnchorEl] = useState(null);
-
-  /* Place holder value changes depending on chatType */
-  const placeHolderValue = useSelector((state) =>
-    chatType === "direct-message" ? state.message.user.name : state.room.name
-  );
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -59,7 +74,7 @@ const ChatInputBox = ({ chatType }) => {
           value={text}
           placeholder={`send a message to ${
             chatType === "direct-message" ? "@" : "#"
-          } ${placeHolderValue} `}
+          } ${user?.username} `}
           onChange={(event) => handleChange(event)}
         />
       </StyledForm>

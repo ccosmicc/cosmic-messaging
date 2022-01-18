@@ -55,7 +55,6 @@ export const getConversations = async (dispatch, user) => {
   try {
     const res = await publicRequest.get("/conversations/" + userID);
     dispatch(getConversationsSuccess(res.data));
-    return res;
   } catch (error) {
     dispatch(getConversationsFailure());
   }
@@ -73,13 +72,12 @@ export const getUser = async (userID) => {
   }
 };
 
-export const getMessages = async (dispatch, currentConversation) => {
-  const conversationID = currentConversation?._id;
+export const getMessages = async (dispatch, currentChat) => {
+  const chatID = currentChat?._id;
   dispatch(getMessagesStart());
   try {
-    const res = await publicRequest.get("/messages/" + conversationID);
+    const res = await publicRequest.get("/messages/" + chatID);
     dispatch(getMessagesSuccess(res.data));
-    return res;
   } catch (error) {
     dispatch(getMessagesFailure());
   }

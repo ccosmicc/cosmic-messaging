@@ -3,10 +3,11 @@ import styled from "styled-components";
 const Container = styled.div`
   display: flex;
   padding: 10px;
-
   &:hover {
     background-color: var(--cosmic-text-hover-color);
   }
+
+  justify-content: ${(props) => (props.own ? "flex-end" : "flex-start")};
 `;
 
 const UserImage = styled.img`
@@ -17,7 +18,7 @@ const UserImage = styled.img`
 `;
 
 const MessageInfo = styled.div`
-  padding-left: 5px;
+  padding: 0px 10px;
 `;
 
 const MessageHeader = styled.div`
@@ -49,4 +50,8 @@ const Message = styled.div`
   font-size: 16px;
 `;
 
-export { Container, UserImage, MessageInfo, MessageHeader, Message };
+const Wrapper = styled.div`
+  display: flex;
+`;
+
+export { Container, UserImage, MessageInfo, MessageHeader, Message, Wrapper };
