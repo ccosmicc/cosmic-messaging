@@ -1,8 +1,9 @@
 import "emoji-mart/css/emoji-mart.css";
 import { Picker } from "emoji-mart";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Tooltip, Popper } from "@mui/material/";
+import { io } from "socket.io-client";
 
 import {
   Container,
@@ -22,8 +23,34 @@ const ChatInputBox = ({ chatType }) => {
   const currentUser = useSelector((state) => state.user.currentUser);
   const currentChat = useSelector((state) => state.user.currentChat);
   const messages = useSelector((state) => state.user.messages);
+  const [arrivalMessage, setArrivalMessage] = useState(null);
 
+  const socket = useRef();
   const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    socket.current = io("ws://localhost:8900");
+    socket.current.on("getMessage", (data) => {
+      setArrivalMessage({
+        sender: data.senderId,
+        text: data.text,
+        createdAt: Date.now(),
+      });
+    });
+  }, []);
+
+  useEffect(() => {
+    arrivalMessage &&
+      currentChat?.members.includes(arrivalMessage.sender) &&
+      sendNewMessage(dispatch, messages, arrivalMessage);
+  }, [arrivalMessage, currentChat]);
+
+  useEffect(() => {
+    socket.current.emit("addUser", currentUser._id);
+    socket.current.on("getUsers", (users) => {
+      console.log(users);
+    });
+  }, [currentUser]);
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -59,6 +86,12 @@ const ChatInputBox = ({ chatType }) => {
     const receiverId = currentChat.members.find(
       (member) => member !== currentUser._id
     );
+
+    socket.current.emit("sendMessage", {
+      senderId: currentUser._id,
+      receiverId,
+      text: newMessage,
+    });
 
     sendNewMessage(dispatch, messages, message);
     setNewMessage("");
