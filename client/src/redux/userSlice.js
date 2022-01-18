@@ -9,6 +9,7 @@ const userSlice = createSlice({
     friends: null,
     conversations: null,
     messages: null,
+    currentChat: null,
   },
 
   /* Login is an async function since it makes API request */
@@ -78,6 +79,9 @@ const userSlice = createSlice({
       state.isFetching = false;
       state.error = true;
     },
+    setCurrentChat: (state, action) => {
+      state.currentChat = action.payload;
+    },
   },
 });
 
@@ -97,5 +101,6 @@ export const {
   getMessagesStart,
   getMessagesSuccess,
   getMessagesFailure,
+  setCurrentChat,
 } = userSlice.actions;
 export default userSlice.reducer;

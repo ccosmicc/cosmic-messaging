@@ -1,3 +1,5 @@
+import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import { StarOutline, InfoOutlined } from "@mui/icons-material/";
 import { Tooltip, Avatar } from "@mui/material";
 
@@ -8,9 +10,26 @@ import {
   HeaderRight,
   StyledBadge,
 } from "./styled";
+import { getUser } from "../../../redux/apiCalls";
 
 const ChatHeader = ({ chatType }) => {
-  const headerTitle = "title";
+  const currentUser = useSelector((state) => state.user.currentUser);
+  const currentChat = useSelector((state) => state.user.currentChat);
+
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const userID = currentChat.members.find((m) => m !== currentUser._id);
+        const user = await getUser(userID);
+        setUser(user);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetchUserInfo();
+  }, [currentUser, currentChat.members]);
 
   return (
     <Header>
@@ -22,13 +41,16 @@ const ChatHeader = ({ chatType }) => {
               anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
               variant="dot"
             >
-              <Avatar src="./cosmic-logo.png" sx={{ width: 24, height: 24 }} />
+              <Avatar
+                src={user?.profilePicture}
+                sx={{ width: 24, height: 24 }}
+              />
             </StyledBadge>
-            <HeaderTitle>{headerTitle}</HeaderTitle>
+            <HeaderTitle>{user?.username}</HeaderTitle>
           </>
         ) : (
           <>
-            <HeaderTitle>#{headerTitle}</HeaderTitle>
+            <HeaderTitle>#{user?.username}</HeaderTitle>
             <StarOutline />
           </>
         )}
