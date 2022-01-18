@@ -21,15 +21,15 @@ const ChatHeader = ({ chatType }) => {
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
-        const userID = currentChat.members.find((m) => m !== currentUser._id);
+        const userID = currentChat?.members.find((m) => m !== currentUser._id);
         const user = await getUser(userID);
         setUser(user);
       } catch (err) {
         console.log(err);
       }
     };
-    fetchUserInfo();
-  }, [currentUser, currentChat.members]);
+    currentChat && fetchUserInfo();
+  }, [currentUser, currentChat]);
 
   return (
     <Header>

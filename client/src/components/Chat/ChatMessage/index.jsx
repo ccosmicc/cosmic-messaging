@@ -24,7 +24,7 @@ const ChatMessage = ({ message, own }) => {
       }
     };
     fetchUserInfo();
-  }, []);
+  }, [message]);
 
   return (
     <Container own={own}>

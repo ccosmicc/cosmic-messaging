@@ -14,6 +14,9 @@ import {
   getMessagesStart,
   getMessagesSuccess,
   getMessagesFailure,
+  sendNewMessageStart,
+  sendNewMessageSuccess,
+  sendNewMessageFailure,
 } from "./userSlice";
 import { publicRequest, userRequest } from "../requestMethods";
 
@@ -80,5 +83,15 @@ export const getMessages = async (dispatch, currentChat) => {
     dispatch(getMessagesSuccess(res.data));
   } catch (error) {
     dispatch(getMessagesFailure());
+  }
+};
+
+export const sendNewMessage = async (dispatch, messages, newMessage) => {
+  dispatch(sendNewMessageStart());
+  try {
+    const res = await publicRequest.post("/messages", newMessage);
+    dispatch(sendNewMessageSuccess([...messages, res.data]));
+  } catch (error) {
+    dispatch(sendNewMessageFailure());
   }
 };

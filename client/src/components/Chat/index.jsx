@@ -5,7 +5,6 @@ import ChatMessage from "./ChatMessage/";
 import ChatHeader from "./ChatHeader";
 import { Container, ChatMessages } from "./styled";
 import { getMessages } from "../../redux/apiCalls";
-import { display } from "@mui/system";
 
 const Chat = ({ chatType }) => {
   const currentUser = useSelector((state) => state.user.currentUser);
@@ -26,7 +25,11 @@ const Chat = ({ chatType }) => {
       <ChatMessages>
         {currentChat ? (
           messages.map((m) => (
-            <ChatMessage message={m} own={m.sender === currentUser._id} />
+            <ChatMessage
+              message={m}
+              own={m.sender === currentUser._id}
+              key={m._id}
+            />
           ))
         ) : (
           <span>Open a conversation to start a chat</span>

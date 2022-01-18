@@ -82,6 +82,19 @@ const userSlice = createSlice({
     setCurrentChat: (state, action) => {
       state.currentChat = action.payload;
     },
+    sendNewMessageStart: (state) => {
+      state.isFetching = true;
+      state.error = false;
+    },
+    sendNewMessageSuccess: (state, action) => {
+      state.isFetching = false;
+      state.messages = action.payload;
+      state.error = false;
+    },
+    sendNewMessageFailure: (state) => {
+      state.isFetching = false;
+      state.error = true;
+    },
   },
 });
 
@@ -102,5 +115,8 @@ export const {
   getMessagesSuccess,
   getMessagesFailure,
   setCurrentChat,
+  sendNewMessageStart,
+  sendNewMessageSuccess,
+  sendNewMessageFailure,
 } = userSlice.actions;
 export default userSlice.reducer;
