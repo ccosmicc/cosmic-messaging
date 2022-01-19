@@ -11,7 +11,7 @@ import {
 
 import { getUser } from "../../../redux/apiCalls";
 
-const ChatMessage = ({ message, own }) => {
+const ChatMessage = ({ message, own, text }) => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -35,7 +35,7 @@ const ChatMessage = ({ message, own }) => {
             <h3>{user?.username}</h3>
             <span>{message.createdAt}</span>
           </MessageHeader>
-          <Message>{message.text}</Message>
+          <Message>{text}</Message>
         </MessageInfo>
       </Wrapper>
     </Container>

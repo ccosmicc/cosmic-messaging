@@ -4,6 +4,9 @@ import { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Tooltip, Popper } from "@mui/material/";
 import { io } from "socket.io-client";
+import { encrypt } from "../../Utility";
+import { box } from "tweetnacl";
+import { decodeBase64, encodeBase64 } from 'tweetnacl-util';
 
 import {
   Container,
@@ -46,7 +49,7 @@ const ChatInputBox = ({ chatType }) => {
   }, [arrivalMessage, currentChat]);
 
   useEffect(() => {
-    socket.current.emit("addUser", currentUser._id);
+    socket.current.emit("addUser", {userID: currentUser._id, userPK: localStorage.getItem('PUBLIC_KEY')});
     socket.current.on("getUsers", (users) => {
       console.log(users);
     });
@@ -58,6 +61,9 @@ const ChatInputBox = ({ chatType }) => {
         const userID = currentChat?.members.find((m) => m !== currentUser._id);
         const user = await getUser(userID);
         setUser(user);
+        const secretKey = decodeBase64(localStorage.getItem('PRIVATE_KEY'))
+        const publicKey = decodeBase64(user.publicKey)
+        localStorage.setItem('SHARED_SECRET', encodeBase64(box.before(publicKey,secretKey)));
       } catch (err) {
         console.log(err);
       }
@@ -76,10 +82,12 @@ const ChatInputBox = ({ chatType }) => {
   const sendMessage = (e) => {
     e.preventDefault(); //prevent from refreshing
 
+    const encrypted = encrypt(decodeBase64(localStorage.getItem('SHARED_SECRET')), newMessage);
+
     //message object
     const message = {
       sender: currentUser._id,
-      text: newMessage,
+      text: encrypted,
       conversationId: currentChat._id,
     };
 
@@ -90,7 +98,7 @@ const ChatInputBox = ({ chatType }) => {
     socket.current.emit("sendMessage", {
       senderId: currentUser._id,
       receiverId,
-      text: newMessage,
+      text: encrypted,
     });
 
     sendNewMessage(dispatch, messages, message);

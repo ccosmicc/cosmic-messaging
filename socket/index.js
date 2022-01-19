@@ -7,7 +7,7 @@ const io = require("socket.io")(8900, {
 let users = [];
 
 const addUser = (userId, socketId) => {
-  !users.some((user) => user.userId === userId) &&
+  !users.some((user) => user.userId.userID === userId) &&
     users.push({ userId, socketId });
 };
 
@@ -16,7 +16,7 @@ const removeUser = (socketId) => {
 };
 
 const getUser = (userId) => {
-  return users.find((user) => user.userId === userId);
+  return users.find((user) => user.userId.userID === userId);
 };
 
 io.on("connection", (socket) => {
@@ -32,6 +32,7 @@ io.on("connection", (socket) => {
   //send and get message
   socket.on("sendMessage", ({ senderId, receiverId, text }) => {
     const user = getUser(receiverId);
+    console.log(`User with id ${senderId} is sending the encrypted message '${text}' to user with id ${receiverId}`);
     io.to(user.socketId).emit("getMessage", {
       senderId,
       text,
