@@ -102,7 +102,7 @@ router.get("/stats", verifyTokenAndAdmin, async (req, res) => {
 });
 
 // ADD USER
-router.put("/:username/add", verifyToken, async (req, res) => {
+router.put("/:username/add", async (req, res) => {
   const currentUser = await User.findById(req.body._id);
   const user = await User.findOne({ username: req.params.username });
   /* 

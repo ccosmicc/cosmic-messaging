@@ -9,6 +9,7 @@ router.post("/register", async (req, res) => {
     username: req.body.username,
     email: req.body.email,
     publicKey: req.body.publicKey,
+    profilePicture: "https://iupac.org/wp-content/uploads/2018/05/default-avatar.png",
     password: CryptoJS.AES.encrypt(
       req.body.password,
       process.env.PASS_SEC
